@@ -1,4 +1,3 @@
-import plotly.express as px
 import plotly.graph_objects as go
 
 def plot_progress(dtm_instance, dashboard_bg_color):
