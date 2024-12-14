@@ -1,8 +1,7 @@
 import plotly.express as px
 import plotly.graph_objects as go
-from dtm_dataframe_creation import dtm  # Importa o objeto `dtm`
 
-def plot_progress(plan, dashboard_bg_color):
+def plot_progress(dtm_instance, dashboard_bg_color):
     """
     Cria um gráfico de linha comparando o progresso planejado e executado do projeto DTM.
     
@@ -11,7 +10,7 @@ def plot_progress(plan, dashboard_bg_color):
     :return: Objeto Figure do Plotly.
     """
     # Reorganizar os dados para plottar múltiplas curvas no mesmo gráfico
-    progress_data = plan.progress_df.melt(
+    progress_data = dtm_instance.progress_df.melt(
         id_vars="Dia", 
         value_vars=["Planejado - % Completo", "Executado - % Completo"],
         var_name="Tipo",
