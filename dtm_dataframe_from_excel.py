@@ -10,6 +10,7 @@ class DTM:
         self.parallel_work = self.total_amount_of_work - self.critical_path_amount_of_work
         self.calculate_planned_progress()
         self.calculate_daily_progress(excel_file)
+        self.calculate_class_task_percentage()
  
     def calculate_planned_progress(self):
         # Converter "End Time (h)" para dias e arredondar para cima para obter o número total de dias do projeto
@@ -59,4 +60,29 @@ class DTM:
             mask = self.progress_df['Dia']==day
             self.progress_df.loc[mask,'Executado - % Completo'] = daily_percentage
 
-# dtm = DTM('DTM_PR-14.xlsx')
+    def calculate_class_task_percentage(self):
+        class_task_list = ['Organização e Logística', 
+                           'Transporte e Movimentação',
+                           'Preparação e Desmontagem', 
+                           'Desinstalação, Instalação e Manutenção',
+                           'Montagem Final']
+        
+        daily_cols = list(self.progress_df['Dia'])
+        last_valid_day = 0
+        for day in daily_cols[-1::-1]:
+            if not self.daily_progress.loc[:,day].isna().all():
+                last_valid_day = day
+                break
+        worked_hours = self.daily_progress.loc[:,last_valid_day]
+        worked_hours *= self.daily_progress.loc[:,'Duração Planejada (h)']/100
+        self.daily_progress['Duração Executada (h)'] = worked_hours
+        hours_class_task = self.daily_progress.groupby('Classe da Tarefa')[['Duração Planejada (h)', 'Duração Executada (h)']].sum()
+                
+        self.class_task_percentage = {}
+        for class_task in class_task_list:
+            mask = hours_class_task.index == class_task
+            planned_hours = hours_class_task[mask]['Duração Planejada (h)'].iloc[0]
+            executed_hours = hours_class_task[mask]['Duração Executada (h)'].iloc[0]
+            self.class_task_percentage[class_task] = round(100*executed_hours/planned_hours,2)
+
+#dtm = DTM('DTM_PR-14.xlsx')
