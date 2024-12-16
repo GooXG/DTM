@@ -88,7 +88,7 @@ def plot_class_task_percentage(dtm_instance, dashboard_bg_color):
             x=percentages,
             orientation='h',
             marker=dict(color='rgb(121, 211, 84)',  # Verde
-                        line=dict(color='rgb(41, 78, 26)', width=2))  # Contorno mais escuro
+                        line=dict(color='white', width=2))  # Contorno mais escuro
         )
     )
 
