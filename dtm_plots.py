@@ -38,7 +38,7 @@ def apply_layout(fig, dashboard_bg_color, xaxis_title, yaxis_title, invert_yaxis
 
 def plot_progress(dtm_instance, dashboard_bg_color):
     """
-        Cria um gráfico de linha comparando o progresso planejado e executado do projeto DTM.
+    Cria um gráfico de linha comparando o progresso planejado e executado do projeto DTM, com marcadores.
     """
     # Reorganizar os dados
     progress_data = dtm_instance.progress_df.melt(
@@ -55,15 +55,17 @@ def plot_progress(dtm_instance, dashboard_bg_color):
         "Executado - % Completo": "rgb(121, 211, 84)"  # Verde
     }
 
+    # Adicionar linhas com marcadores
     for tipo, color in color_mapping.items():
         filtered_data = progress_data[progress_data["Tipo"] == tipo]
         fig.add_trace(
             go.Scatter(
                 x=filtered_data["Dia"],
                 y=filtered_data["Porcentagem Concluída (%)"],
-                mode="lines",
+                mode="lines+markers",  # Adiciona linhas e marcadores
                 line=dict(color=color, width=5),
-                name="Planejado" if tipo == "Planejado - % Completo" else "Executado"
+                marker=dict(size=8, symbol="circle", color=color, line=dict(width=1, color="white")),  # Personaliza marcadores
+                name="Planejado" if tipo == "Planejado - % Completo" else "Executado"  # Nomes customizados
             )
         )
 
